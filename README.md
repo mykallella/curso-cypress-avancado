@@ -30,11 +30,7 @@
 - Faker (`v5.4.0`)
 - StandardJS (`v1.0.0`)
 - Node.js (`v14.15.4`)
-<<<<<<< HEAD
 - npm (`v6.14.11`)
-=======
-- npm (`v6.14.11`) 
-
 
 ## 🔧 Instalação
 
