@@ -41,14 +41,10 @@
     "faker": "^5.4.0",
     "standardjs": "^1.0.0-alpha"
   },
-<<<<<<< HEAD
   "dependencies": {
     "browserslist": "^4.21.5"
   }
-=======
   "bugs": {
     "url": "https://github.com/wlsf82/curso-cypress-avancado/issues"
-  },
-  "dependencies": {}
->>>>>>> 29054f1c5a7ebfb0719beea5e93a7f60e6e2e8b6
+  }
 }
