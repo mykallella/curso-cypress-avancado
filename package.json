@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "browserslist": "^4.21.5"
-  }
+  },
   "bugs": {
     "url": "https://github.com/wlsf82/curso-cypress-avancado/issues"
   }
