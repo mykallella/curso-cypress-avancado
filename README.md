@@ -1,7 +1,7 @@
 # Talking About Testing | Cypress Avançado
 
-![preview](./preview_1.png)
-![preview](./preview_2.png)
+![preview](./preview1.png)
+![preview](./preview2.png)
  
 > Explorando o Cypress para automação de testes funcionais de Interface Gráfica de Usuário (GUI) e API REST
 
