@@ -62,7 +62,9 @@ describe('Hacker Stories', () => {
       }).as('getNextStories')
 
       cy.get('.item').should('have.length', 20)
-      cy.contains('More').click()       
+      cy.contains('More')
+        .should('be.visible')
+        .click()       
       cy.wait('@getNextStories')
       cy.get('.item').should('have.length', 40)
     })
@@ -74,11 +76,16 @@ describe('Hacker Stories', () => {
       ).as('getNewTermStories')
 
       cy.get('#search')
+        .should('be.visible')
         .clear()      
         .type(`${newTerm}{enter}`)
 
       // cy.assertLoadingIsShownAndHidden()
       cy.wait('@getNewTermStories') // espera a requisição
+
+      // Obs: o navegador grava no LocalStorage o último termo pesquisado para estar disponível no campo de busca
+      cy.getLocalStorage('search')
+        .should('be.equal', newTerm)        
 
       cy.get(`button:contains(${initialTerm})`)
         .should('be.visible')
@@ -86,11 +93,15 @@ describe('Hacker Stories', () => {
 
       // cy.assertLoadingIsShownAndHidden()
       cy.wait('@getStories') // espera a requisição
+
+      cy.getLocalStorage('search')
+        .should('be.equal', initialTerm)
       
       cy.get('.item').should('have.length', 20)
       cy.get('.item')
         .first()
-        .should('contain', initialTerm)
+        .should('be.visible')
+        .and('contain', initialTerm)
       cy.get(`button:contains(${newTerm})`)
         .should('be.visible')
     })
@@ -114,6 +125,7 @@ describe('Hacker Stories', () => {
         cy.wait('@getStories') // espero a resiquição
       })
     
+      /** FOOTER */
       it('shows the footer', () => {
         cy.get('footer')
           .should('be.visible')
@@ -123,12 +135,13 @@ describe('Hacker Stories', () => {
     
       /** CONTEXTO -  LIST OF STORIES */
       context('List of stories', () => {
+        const stories = require('../fixtures/stories') // só inseri os dados da fixture stories na variável 'stories'
 
-        it.only('shows the right data for all rendered stories', () => {
-          const stories = require('../fixtures/stories') // só inseri os dados da fixture stories na variável 'stories'
+        it('shows the right data for all rendered stories', () => {          
 
           cy.get('.item')
             .first() // pega o primeiro
+            .should('be.visible')
             .should('contain', stories.hits[0].title) 
             // verifica se contém o título do primeiro item
             .and('contain', stories.hits[0].author)
@@ -141,6 +154,7 @@ describe('Hacker Stories', () => {
 
           cy.get('.item')
             .last() // pega o último
+            .should('be.visible')
             .should('contain', stories.hits[1].title) 
             // verifica se contém o título do segundo item
             .and('contain', stories.hits[1].author)
@@ -156,24 +170,101 @@ describe('Hacker Stories', () => {
         it('shows one less stories after dimissing the first one', () => {
           cy.get('.button-small')
             .first()
+            .should('be.visible')
             .click()
     
           cy.get('.item').should('have.length', 1)
         })
     
-        // Since the API is external,
-        // I can't control what it will provide to the frontend,
-        // and so, how can I test ordering?
-        // This is why these tests are being skipped.
-        // TODO: Find a way to test them out.
-        context.skip('Order by', () => {
-          it('orders by title', () => {})
+        context('Order by', () => {
+          it('orders by title', () => {
+            cy.get('.list-header-button:contains(Title)') // seleciono o menu 'Title'
+              .as('titleHeader')
+              .should('be.visible')
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].title)
+            cy.get(`.item a:contains(${stories.hits[0].title})`)
+            // pega o item que contém um link com o título do segundo item
+              .should('have.attr', 'href', stories.hits[0].url)
+              // verifica se o atributo href desse link tem a url do segundo item  
+
+            cy.get('@titleHeader') // seleciono o menu 'Title'
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].title)
+            cy.get(`.item a:contains(${stories.hits[1].title})`)
+            // pega o item que contém um link com o título do segundo item
+              .should('have.attr', 'href', stories.hits[1].url)
+              // verifica se o atributo href desse link tem a url do segundo item  
+          })
     
-          it('orders by author', () => {})
+          it('orders by author', () => {
+            cy.get('.list-header-button:contains(Author)') // seleciono o menu 'Author'
+              .as('authorHeader')
+              .should('be.visible')
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].author)
+
+            cy.get('@authorHeader') // seleciono o menu 'Author'
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].author)
+          })
     
-          it('orders by comments', () => {})
+          it('orders by comments', () => {
+            cy.get('.list-header-button:contains(Comments)') // seleciono o menu 'Comments'
+              .as('commentsHeader')
+              .should('be.visible')
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].num_comments)
+
+            cy.get('@commentsHeader') // seleciono o menu 'Comments'
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].num_comments)
+          })
     
-          it('orders by points', () => {})
+          it('orders by points', () => {
+            cy.get('.list-header-button:contains(Points)') // seleciono o menu 'Points'
+            .as('pointsHeader')
+            .should('be.visible')
+            .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[1].points)
+
+            cy.get('@pointsHeader') // seleciono o menu 'Points'
+              .click()
+
+            cy.get('.item')
+              .first()
+              .should('be.visible')
+              .and('contain', stories.hits[0].points)
+          })
+
         })
       })
   
@@ -199,15 +290,25 @@ describe('Hacker Stories', () => {
         cy.wait('@getEmptyStories')
   
         cy.get('#search')
+          .should('be.visible')
           .clear()
+      })
+
+      it('shows no story when none is returned', () => {
+        cy.get('.item').should('not.exist') // verifica se não tem nada na lista de itens
       })
   
       it('types and hits ENTER', () => {
         cy.get('#search')
+          .should('be.visible')
           .type(`${newTerm}{enter}`)
   
         // cy.assertLoadingIsShownAndHidden()
         cy.wait('@getStories') // espera a requisição
+
+        // Obs: o navegador grava no LocalStorage o último termo pesquisado para estar disponível no campo de busca
+        cy.getLocalStorage('search')
+          .should('be.equal', newTerm) 
   
         cy.get('.item').should('have.length', 2)
         cy.get(`button:contains(${initialTerm})`)
@@ -216,12 +317,18 @@ describe('Hacker Stories', () => {
   
       it('types and clicks the submit button', () => {
         cy.get('#search')
+          .should('be.visible')
           .type(newTerm)
         cy.contains('Submit')
+          .should('be.visible')
           .click()
   
         // cy.assertLoadingIsShownAndHidden()
         cy.wait('@getStories') // espera a requisição
+
+        // Obs: o navegador grava no LocalStorage o último termo pesquisado para estar disponível no campo de busca
+        cy.getLocalStorage('search')
+          .should('be.equal', newTerm)
   
         cy.get('.item').should('have.length', 2)        
         cy.get(`button:contains(${initialTerm})`)
@@ -248,22 +355,40 @@ describe('Hacker Stories', () => {
           ).as('getRandomStories')
   
           Cypress._.times(6, () => { // executa 6 vezes
-            cy.get('#search')
+            const randomWord = faker.random.word()
+
+            cy.get('#search')              
               .clear()
-              .type(`${faker.random.word()}{enter}`)
+              .type(`${randomWord}{enter}`)
+
             cy.wait('@getRandomStories') // espera a requisição
+
+            cy.getLocalStorage('search')
+              .should('be.equal', randomWord)
+            
           })
   
           // cy.assertLoadingIsShownAndHidden()
-  
+ 
           cy.get('.last-searches button')
             .should('have.length', 5)
+
+            
+          /* Alternativa ao código acima quando seletor CSS é muito extenso:
+
+          cy.get('.last-searches')
+            .within(() => { // procura dentro do seletor acima...
+              cy.get('button') // todos os botões...
+                .should('have.length', 5)
+          */
+
+          })  
         })
       })
     })
-  })
-
 })
+
+
 
 
 // SIMULANDO ERROS
@@ -293,5 +418,26 @@ context('Errors', () => {
     cy.get('p:contains(Something went wrong ...)').should('be.visible') 
     // verifica que a frase está visível no parágrafo
   })
+})
+
+/** DELAY */
+it('shows a "Loading ..." state before showing the results', () => {
+  cy.intercept(
+    'GET',
+    '**/search**',
+    {
+      delay: 1000, // com este delay o navegador espera 1s
+      fixture: 'stories'
+    }
+  ).as('getDelayedStories')
+
+  cy.visit('/')
+
+  cy.assertLoadingIsShownAndHidden() 
+  // com a delay de 1s dá tempo de o 'Loading ...' aparecer e assim verificarmos se ele apareceu
+
+  cy.wait('@getDelayedStories')
+
+  cy.get('.item').should('have.length', 2)
 })
 
