@@ -3,7 +3,7 @@
 ![preview](./preview1.png)
 ![preview](./preview2.png)
  
-> Explorando o Cypress para automação de testes funcionais de Interface Gráfica de Usuário (GUI) e API REST
+> Explorando o Cypress para automação de testes - E2E e API REST
 
  Projeto realizado durante o curso **Cypress Avançado** da escola online **Talking About Testing**.
  
