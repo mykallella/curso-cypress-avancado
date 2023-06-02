@@ -39,9 +39,9 @@ Execute `npm install` para instalar as dependências de dev.
 
 ## 🔧 Testes
 
-	Execute `npm test` para executar o teste no modo headless.
+Execute `npm test` para executar o teste no modo headless.
 
-	Ou `npm run cy:open` para executar o teste no modo interativo.
+Ou `npm run cy:open` para executar o teste no modo interativo.
 
 
 ## 🔗 Contato
