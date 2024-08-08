@@ -1,7 +1,8 @@
 # Talking About Testing | Cypress Avançado
 
 ![preview](./preview1.png)
-![preview](./preview2.png)
+
+https://github.com/user-attachments/assets/d7ddde35-4feb-4381-b7c3-36f36fe55756
  
 > Cypress avançado para automação de testes Web - E2E e API REST
 
